@@ -12,7 +12,6 @@ public class Client {
              BufferedReader br = new BufferedReader(new InputStreamReader(localhost.getInputStream()));
              BufferedReader kb = new BufferedReader(new InputStreamReader(System.in))) {
             String str, str1;
-            System.out.println("Enter your name");
             while (!(str = kb.readLine()).equals("exit")) {
                 dataOutputStream.writeBytes(str + "\n");
                 str1 = br.readLine();

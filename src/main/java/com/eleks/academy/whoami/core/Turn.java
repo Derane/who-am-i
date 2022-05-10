@@ -12,5 +12,4 @@ public interface Turn {
 
 	int getCurrentPlayerIndex();
 
-	void setCurrentPlayerIndex(int i);
 }

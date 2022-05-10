@@ -3,7 +3,11 @@ package com.eleks.academy.whoami.core.impl;
 import com.eleks.academy.whoami.core.Player;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 public class FairBotPlayer implements Player {
 
@@ -11,11 +15,23 @@ public class FairBotPlayer implements Player {
     private String name;
     private List<String> availableQuestions;
     private List<String> availableGuesses;
+    private final Collection<String> characterPool;
 
-    public FairBotPlayer(String name, List<String> availableQuestions, List<String> availableGuesses) {
+    public FairBotPlayer(String name, Collection<String> characterPool, List<String> availableQuestions, List<String> availableGuesses) {
         this.name = name;
+        this.characterPool = Objects.requireNonNull(characterPool);
         this.availableQuestions = new ArrayList<>(availableQuestions);
         this.availableGuesses = new ArrayList<>(availableGuesses);
+    }
+
+    @Override
+    public Future<String> setName() {
+        return CompletableFuture.completedFuture(this.name);
+    }
+
+    @Override
+    public String getSuggestCharacter() {
+        return null;
     }
 
     @Override
@@ -24,40 +40,45 @@ public class FairBotPlayer implements Player {
     }
 
     @Override
-    public String getQuestion() {
+    public Future<String> getQuestion() {
         String question = availableQuestions.remove(0);
         System.out.println("Player: " + name + ". Asks: " + question);
-        return question;
+        return CompletableFuture.completedFuture(question);
     }
 
     @Override
-    public String answerQuestion(String question, String character) {
+    public Future<String> answerQuestion(String question, String character) {
         String answer = Math.random() < 0.5 ? "Yes" : "No";
         System.out.println("Player: " + name + ". Answers: " + answer);
-        return answer;
+        return CompletableFuture.completedFuture(answer);
     }
 
 
     @Override
-    public String answerGuess(String guess, String character) {
+    public Future<String> answerGuess(String guess, String character) {
         System.out.println(guess);
         Integer questionChar = guess.lastIndexOf("?");
         String substring = guess.substring(7, questionChar);
         boolean trueGuess = substring.equals(character);
-        return trueGuess ? "Yes" : "No";
+        return CompletableFuture.completedFuture(trueGuess ? "Yes" : "No");
     }
 
     @Override
-    public String getGuess() {
+    public Future<String> suggestCharacter() {
+        return CompletableFuture.completedFuture(characterPool.iterator().next());
+    }
+
+    @Override
+    public Future<String> getGuess() {
         int randomPos = (int) (Math.random() * this.availableGuesses.size());
         String guess = this.availableGuesses.remove(randomPos);
         System.out.println("Player: " + name + ". Guesses: Am I " + guess);
-        return guess;
+        return CompletableFuture.completedFuture(guess);
     }
 
     @Override
-    public boolean isReadyForGuess() {
-        return availableQuestions.isEmpty();
+    public Future<Boolean> isReadyForGuess() {
+        return CompletableFuture.completedFuture(availableQuestions.isEmpty());
     }
 
 }
