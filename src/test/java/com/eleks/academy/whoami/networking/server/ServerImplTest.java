@@ -14,12 +14,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class RandomGameTest {
     @Test
     public void askPlayersForCharactersSuggestion() {
-        Game game = new RandomGame(List.of("C"));
         TestPlayer p1 = new TestPlayer("P1");
         TestPlayer p2 = new TestPlayer("P2");
-        game.addPlayer(p1);
-        game.addPlayer(p2);
-        game.assignCharacters();
+        Game game = new RandomGame(List.of(p1,p2), List.of("C"));
+        game.initGame();
         // TODO: assert that game asks for a character suggestion
         assertAll(() -> assertTrue(p1.suggested),
                 () -> assertTrue(p2.suggested));
@@ -35,12 +33,17 @@ class RandomGameTest {
 
         @Override
         public String getName() {
-            return null;
+            return name;
         }
 
         @Override
         public String getSuggestCharacter() {
-            return null;
+            return "null";
+        }
+
+        @Override
+        public void close() {
+
         }
 
         @Override

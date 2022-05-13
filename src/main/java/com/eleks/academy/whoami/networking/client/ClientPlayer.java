@@ -11,8 +11,9 @@ import com.eleks.academy.whoami.core.Player;
 
 public class ClientPlayer implements Player, AutoCloseable {
 
-    private BufferedReader reader;
-    private PrintStream writer;
+    private final BufferedReader reader;
+    private final PrintStream writer;
+    private final Socket socket;
     private String name;
     private String suggestCharacter;
     public ExecutorService getExecutor() {
@@ -22,6 +23,7 @@ public class ClientPlayer implements Player, AutoCloseable {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public ClientPlayer(Socket socket) throws IOException {
+        this.socket = socket;
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.writer = new PrintStream(socket.getOutputStream());
     }
@@ -173,6 +175,17 @@ public class ClientPlayer implements Player, AutoCloseable {
             executor.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        }
+
+        close(writer);
+        close(reader);
+        close(socket);
+    }
+    private void close(AutoCloseable closeable) {
+        try {
+            closeable.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

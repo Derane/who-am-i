@@ -11,6 +11,7 @@ import com.eleks.academy.whoami.core.Game;
 import com.eleks.academy.whoami.core.Player;
 import com.eleks.academy.whoami.core.Turn;
 import com.eleks.academy.whoami.exception.GameInterruptedException;
+import com.eleks.academy.whoami.networking.client.ClientPlayer;
 
 public class RandomGame implements Game {
 
@@ -18,19 +19,21 @@ public class RandomGame implements Game {
     private static final TimeUnit UNIT = TimeUnit.MINUTES;
 
     private Map<String, String> playersCharacter = new ConcurrentHashMap<>();
-    private List<Player> players = new ArrayList<>();
-    private List<String> availableCharacters;
+    private final List<Player> players;
+    private final List<String> availableCharacters;
     private Turn currentTurn;
 
 
     private final static String YES = "Yes";
     private final static String NO = "No";
 
-    public RandomGame(List<String> availableCharacters) {
+    public RandomGame(List<Player> players, List<String> availableCharacters) {
         this.availableCharacters = new ArrayList<>(availableCharacters);
+        this.players = new ArrayList<>(players.size());
+        players.forEach(this::addPlayer);
+
     }
 
-    @Override
     public void addPlayer(Player player) {
         // TODO: Add test to ensure that player has not been added to the lists when failed to obtain suggestion
         Future<String> maybeCharacter = player.suggestCharacter();
@@ -97,8 +100,7 @@ public class RandomGame implements Game {
 
     }
 
-    @Override
-    public void assignCharacters() {
+    private void assignCharacters() {
 
         players.stream().map(Player::setName).parallel().map(f -> {
             try {
@@ -117,15 +119,37 @@ public class RandomGame implements Game {
 
     @Override
     public void initGame() {
+        this.assignCharacters();
         this.currentTurn = new TurnImpl(this.players);
 
     }
+
+    @Override
+    public void play() {
+
+        boolean gameStatus = true;
+        while (gameStatus) {
+            boolean turnResult = this.makeTurn();
+
+            while (turnResult) {
+                turnResult = this.makeTurn();
+            }
+            this.changeTurn();
+            gameStatus = !this.isFinished();
+        }
+    }
+
     @Override
     public boolean isFinished() {
         return players.size() == 1;
     }
 
     private String getRandomCharacter(String name) {
+        for (var a : players
+             ) {
+            System.out.println(a.getName());
+
+        }
         List<String> collect = players.stream().map(Player::getName).collect(Collectors.toList());
         int i = collect.indexOf(name);
         int randomPos = getRandomPos();

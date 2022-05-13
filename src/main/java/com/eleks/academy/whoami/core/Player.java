@@ -1,6 +1,5 @@
 package com.eleks.academy.whoami.core;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 public interface Player {
@@ -26,4 +25,6 @@ public interface Player {
 	String getName();
 
 	String getSuggestCharacter();
+
+	void close();
 }

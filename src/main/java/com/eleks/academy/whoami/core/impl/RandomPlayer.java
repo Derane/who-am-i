@@ -61,6 +61,11 @@ public class RandomPlayer implements Player {
 	}
 
 	@Override
+	public void close() {
+
+	}
+
+	@Override
 	public Future<String> getGuess() {
 		int randomPos = (int)(Math.random() * this.availableGuesses.size());
 		String guess = this.availableGuesses.remove(randomPos);

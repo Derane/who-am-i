@@ -6,61 +6,66 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import com.eleks.academy.whoami.core.Game;
 import com.eleks.academy.whoami.core.Player;
 import com.eleks.academy.whoami.core.impl.RandomGame;
 import com.eleks.academy.whoami.core.impl.RandomPlayer;
+import com.eleks.academy.whoami.networking.client.ClientPlayer;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 public class ServerImpl implements Server {
 
-	private List<String> characters = List.of("Batman", "Superman");
-	private List<String> questions = List.of("Am i a human?", "Am i a character from a movie?");
-	private List<String> guessess = List.of("Batman", "Superman");
+    private List<String> characters = List.of("Batman", "Superman");
+    private List<String> questions = List.of("Am i a human?", "Am i a character from a movie?");
+    private List<String> guessess = List.of("Batman", "Superman");
 
-	private RandomGame game = new RandomGame(characters);
-	private final ServerSocket serverSocket;
-	private final List<Socket> openSockets = new ArrayList<>();
+    private final ServerSocket serverSocket;
+    private final int players;
+    private final List<Player> clientPlayers;
 
-	public ServerImpl(int port) throws IOException {
-		this.serverSocket = new ServerSocket(port);
-	}
+    public ServerImpl(int port, int players) throws IOException {
+        this.serverSocket = new ServerSocket(port);
+        this.players = players;
+        this.clientPlayers = new ArrayList<>(players);
+    }
 
-	@Override
-	public Game startGame() throws IOException {
-		game.addPlayer(new RandomPlayer("Bot", characters, questions, guessess));
-		System.out.println("Server starts");
-		System.out.println("Waiting for a client connect....");
-		return game;
-	}
+    @Override
+    public Game startGame() throws IOException {
+        RandomGame game = new RandomGame(clientPlayers, characters);
+        game.initGame();
 
-	@Override
-	public Socket waitForPlayer(Game game) throws IOException {
-		Socket player = serverSocket.accept();
-		openSockets.add(player);
-		return player;
-	}
+        return game;
+    }
 
-	@Override
-	public void addPlayer(Player player) {
-		game.addPlayer(player);
-	}
 
-	@Override
-	public void stopServer(Socket clientSocket, BufferedReader reader) throws IOException {
-		clientSocket.close();
-		reader.close();
-	}
+    @Override
+    @PostConstruct
+    public void waitForPlayer() throws IOException {
+        System.out.println("Server starts");
+        System.out.println("Waiting for a client connect....");
+        for (int i = 0; i < players; i++) {
 
-	public void stop() {
-		for (Socket s : openSockets) {
-			try {
-				s.close();
-			} catch (IOException e) {
-				System.err.println(String.format("Could not close a socket (%s)", e.getMessage()));
-			}
-		}
-	}
+            clientPlayers.add(new ClientPlayer(serverSocket.accept()));
+
+        }
+        System.out.printf("Got %d players. Starting a game.%n", players);
+    }
+
+
+    @PreDestroy
+    public void stop() {
+        for (Player clientPlayer : clientPlayers) {
+            try {
+                clientPlayer.close();
+            } catch (Exception e) {
+                System.err.println(String.format("Could not close a socket (%s)", e.getMessage()));
+            }
+
+
+        }
+    }
 
 }

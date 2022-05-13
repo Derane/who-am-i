@@ -35,6 +35,11 @@ public class FairBotPlayer implements Player {
     }
 
     @Override
+    public void close() {
+
+    }
+
+    @Override
     public String getName() {
         return this.name;
     }
