@@ -16,6 +16,7 @@ public class ClientPlayer implements Player, AutoCloseable {
     private final Socket socket;
     private String name;
     private String suggestCharacter;
+
     public ExecutorService getExecutor() {
         return executor;
     }
@@ -146,13 +147,16 @@ public class ClientPlayer implements Player, AutoCloseable {
         }
         return answer;
     }
+
     @Override
     public String getSuggestCharacter() {
         return suggestCharacter;
     }
+
     public boolean isThisPlayerSuggestCharacter(String character) {
         return this.suggestCharacter.equals(character);
     }
+
     @Override
     public Future<String> suggestCharacter() {
         return executor.submit(this::doSuggestCharacter);
@@ -181,6 +185,7 @@ public class ClientPlayer implements Player, AutoCloseable {
         close(reader);
         close(socket);
     }
+
     private void close(AutoCloseable closeable) {
         try {
             closeable.close();

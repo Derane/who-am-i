@@ -15,12 +15,13 @@ class ServerPropertiesTest {
         assertEquals("Port value cannot be less than value: 1024 ", illegalArgumentException.getMessage());
 
     }
+
     @Test
     void validatePlayers() {
         IllegalArgumentException illegalArgumentException
                 = assertThrows(IllegalArgumentException.class, () -> new ServerProperties(1025, -2));
         assertEquals("Players value cannot be negative value: -2 ", illegalArgumentException.getMessage());
-         illegalArgumentException
+        illegalArgumentException
                 = assertThrows(IllegalArgumentException.class, () -> new ServerProperties(1026, 2));
         assertEquals("Players value should be greater than: 2, but provided 2", illegalArgumentException.getMessage());
     }

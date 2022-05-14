@@ -2,14 +2,17 @@ package com.eleks.academy.whoami.core;
 
 public interface Game {
 
+    boolean makeTurn();
 
-	boolean makeTurn();
+    boolean isFinished();
 
+    void changeTurn();
 
-	boolean isFinished();
+    void initGame();
 
-	void changeTurn();
+    void play();
 
-	void initGame();
-	void play();
+    default boolean isAvailable() {
+        throw new UnsupportedOperationException();
+    }
 }

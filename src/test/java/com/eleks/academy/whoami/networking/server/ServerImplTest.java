@@ -16,7 +16,7 @@ class RandomGameTest {
     public void askPlayersForCharactersSuggestion() {
         TestPlayer p1 = new TestPlayer("P1");
         TestPlayer p2 = new TestPlayer("P2");
-        Game game = new RandomGame(List.of(p1,p2), List.of("C"));
+        Game game = new RandomGame(List.of(p1, p2), List.of("C"));
         game.initGame();
         // TODO: assert that game asks for a character suggestion
         assertAll(() -> assertTrue(p1.suggested),

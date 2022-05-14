@@ -4,27 +4,29 @@ import java.util.concurrent.Future;
 
 public interface Player {
 
-	Future<String> suggestCharacter();
+    Future<String> suggestCharacter();
 
-	// TODO: return Future<String>
+    // TODO: return Future<String>
 
-	Future<String> getQuestion();
-	// TODO: return Future<String>
+    Future<String> getQuestion();
+    // TODO: return Future<String>
 
-	Future<String> answerQuestion(String question, String character);
-	// TODO: return Future<String>
+    Future<String> answerQuestion(String question, String character);
+    // TODO: return Future<String>
 
-	Future<String> getGuess();
-	// TODO: return Future<String>
-	Future<Boolean> isReadyForGuess();
-	// TODO: return Future<String>
+    Future<String> getGuess();
 
-	Future<String> answerGuess(String guess, String character);
-	Future<String> setName();
+    // TODO: return Future<String>
+    Future<Boolean> isReadyForGuess();
+    // TODO: return Future<String>
 
-	String getName();
+    Future<String> answerGuess(String guess, String character);
 
-	String getSuggestCharacter();
+    Future<String> setName();
 
-	void close();
+    String getName();
+
+    String getSuggestCharacter();
+
+    void close();
 }

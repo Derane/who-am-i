@@ -20,7 +20,7 @@ public class ServerProperties {
         }
         if (players <= MINIMUM_PLAYERS) {
             throw new IllegalArgumentException(String.format("Players value should be greater than: %d," +
-                            " but provided %d", MINIMUM_PLAYERS, players));
+                    " but provided %d", MINIMUM_PLAYERS, players));
         }
         this.port = port;
         this.players = players;

@@ -19,10 +19,9 @@ public class App {
 
         Game game = server.startGame();
 
-                game.play();
+        game.play();
 
     }
-
 
 
 }

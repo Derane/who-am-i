@@ -140,13 +140,18 @@ public class RandomGame implements Game {
     }
 
     @Override
+    public boolean isAvailable() {
+        return !this.availableCharacters.isEmpty();
+    }
+
+    @Override
     public boolean isFinished() {
         return players.size() == 1;
     }
 
     private String getRandomCharacter(String name) {
         for (var a : players
-             ) {
+        ) {
             System.out.println(a.getName());
 
         }
