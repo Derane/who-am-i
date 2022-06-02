@@ -2,6 +2,7 @@ package com.eleks.academy.whoami.controller;
 
 import com.eleks.academy.whoami.model.request.CharacterSuggestion;
 import com.eleks.academy.whoami.model.request.NewGameRequest;
+import com.eleks.academy.whoami.model.request.UserName;
 import com.eleks.academy.whoami.model.response.GameDetails;
 import com.eleks.academy.whoami.model.response.GameLight;
 import com.eleks.academy.whoami.service.GameService;
@@ -59,7 +60,7 @@ public class GameController {
 	@PostMapping("/{id}/characters")
 	@ResponseStatus(HttpStatus.OK)
 	public void suggestCharacter(@PathVariable("id") String id,
-								 @RequestHeader(PLAYER) String player,
+								 @RequestHeader(PLAYER) UserName player,
 								 @Valid @RequestBody CharacterSuggestion suggestion) {
 		this.gameService.suggestCharacter(id, player, suggestion);
 	}

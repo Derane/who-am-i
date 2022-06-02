@@ -6,6 +6,7 @@ import com.eleks.academy.whoami.core.impl.PersistentGame;
 import com.eleks.academy.whoami.core.impl.StartGameAnswer;
 import com.eleks.academy.whoami.model.request.CharacterSuggestion;
 import com.eleks.academy.whoami.model.request.NewGameRequest;
+import com.eleks.academy.whoami.model.request.UserName;
 import com.eleks.academy.whoami.model.response.GameDetails;
 import com.eleks.academy.whoami.model.response.GameLight;
 import com.eleks.academy.whoami.repository.GameRepository;
@@ -59,9 +60,9 @@ public class GameServiceImpl implements GameService {
 	}
 
 	@Override
-	public void suggestCharacter(String id, String player, CharacterSuggestion suggestion) {
+	public void suggestCharacter(String id, UserName player, CharacterSuggestion suggestion) {
 		this.gameRepository.findById(id)
-				.flatMap(game -> game.findPlayer(player))
+				.flatMap(game -> game.findPlayer(player.getName()))
 				.ifPresent(p -> p.setCharacter(suggestion.getCharacter()));
 	}
 

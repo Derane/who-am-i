@@ -2,6 +2,7 @@ package com.eleks.academy.whoami.service;
 
 import com.eleks.academy.whoami.model.request.CharacterSuggestion;
 import com.eleks.academy.whoami.model.request.NewGameRequest;
+import com.eleks.academy.whoami.model.request.UserName;
 import com.eleks.academy.whoami.model.response.GameDetails;
 import com.eleks.academy.whoami.model.response.GameLight;
 
@@ -18,7 +19,7 @@ public interface GameService {
 
 	Optional<GameDetails> findByIdAndPlayer(String id, String player);
 
-	void suggestCharacter(String id, String player, CharacterSuggestion suggestion);
+	void suggestCharacter(String id, UserName player, CharacterSuggestion suggestion);
 
 	Optional<GameDetails> startGame(String id, String player);
 
