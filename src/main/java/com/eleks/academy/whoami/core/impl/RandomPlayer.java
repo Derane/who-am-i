@@ -24,7 +24,7 @@ public class RandomPlayer implements Player {
 	}
 	
 	@Override
-	public Future<String> getName() {
+	public Future<String> getId() {
 		return CompletableFuture.completedFuture(this.name);
 	}
 

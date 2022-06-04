@@ -56,7 +56,7 @@ public class RandomGame implements Game {
 		Set<String> answers;
 		String guessersName;
 		try {
-			guessersName = currentGuesser.getName().get(DURATION, UNIT);
+			guessersName = currentGuesser.getId().get(DURATION, UNIT);
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			// TODO: Add custom runtime exception implementation
 			throw new RuntimeException("Failed to obtain a player's name", e);
@@ -89,7 +89,7 @@ public class RandomGame implements Game {
 	}
 
 	private void assignCharacters() {
-		players.stream().map(Player::getName).parallel().map(f -> {
+		players.stream().map(Player::getId).parallel().map(f -> {
 			// TODO: extract into a configuration parameters
 			try {
 				return f.get(DURATION, UNIT);

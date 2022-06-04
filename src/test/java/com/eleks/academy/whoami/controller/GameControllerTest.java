@@ -3,6 +3,7 @@ package com.eleks.academy.whoami.controller;
 import com.eleks.academy.whoami.configuration.GameControllerAdvice;
 import com.eleks.academy.whoami.model.request.CharacterSuggestion;
 import com.eleks.academy.whoami.model.request.NewGameRequest;
+import com.eleks.academy.whoami.model.request.UserName;
 import com.eleks.academy.whoami.model.response.GameDetails;
 import com.eleks.academy.whoami.service.impl.GameServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +46,7 @@ class GameControllerTest {
 	void findAvailableGames() throws Exception {
 		this.mockMvc.perform(
 						MockMvcRequestBuilders.get("/games")
-								.header("X-Player", "player"))
+								.header("X-Id", "player"))
 				.andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0]").doesNotHaveJsonPath());
 	}
@@ -58,7 +59,7 @@ class GameControllerTest {
 		when(gameService.createGame(eq("player"), any(NewGameRequest.class))).thenReturn(gameDetails);
 		this.mockMvc.perform(
 						MockMvcRequestBuilders.post("/games")
-								.header("X-Player", "player")
+								.header("X-Id", "player")
 								.contentType(MediaType.APPLICATION_JSON)
 								.content("{\n" +
 										"    \"maxPlayers\": 2\n" +
@@ -72,7 +73,7 @@ class GameControllerTest {
 	void createGameFailedWithException() throws Exception {
 		this.mockMvc.perform(
 						MockMvcRequestBuilders.post("/games")
-								.header("X-Player", "player")
+								.header("X-Id", "player")
 								.contentType(MediaType.APPLICATION_JSON)
 								.content("{\n" +
 										"    \"maxPlayers\": null\n" +
@@ -84,29 +85,42 @@ class GameControllerTest {
 
 	@Test
 	void suggestCharacter() throws Exception {
-		doNothing().when(gameService).suggestCharacter(eq("1234"), eq("player"), any(CharacterSuggestion.class));
+		doNothing().when(gameService).suggestCharacter(eq("1234"), eq("player"), any(CharacterSuggestion.class), any(UserName.class));
 		this.mockMvc.perform(
 						MockMvcRequestBuilders.post("/games/1234/characters")
-								.header("X-Player", "player")
+								.header("X-Id", "player")
+								.header("X-Name", "s")
 								.contentType(MediaType.APPLICATION_JSON)
 								.content("{\n" +
-										"    \"character\": \" char\"\n" +
+										"    \"character\": \" char \"\n" +
 										"}"))
 				.andExpect(status().isOk());
-		verify(gameService, times(1)).suggestCharacter(eq("1234"), eq("player"), any(CharacterSuggestion.class));
+		verify(gameService, times(1)).suggestCharacter(eq("1234"), eq("player"), any(CharacterSuggestion.class), any(UserName.class));
 	}
 	@Test
-	void suggestValidatedCharacter() throws Exception {
+	void failValidationSuggestCharacter() throws Exception {
 		doNothing().when(gameService).suggestCharacter(eq("1234"), eq("player"),
-				eq(new CharacterSuggestion("Batman")));
+				eq(new CharacterSuggestion("Batman")), any(UserName.class) );
 		this.mockMvc.perform(
 						MockMvcRequestBuilders.post("/games/1234/characters")
-								.header("X-Player", "player")
+								.header("X-Id", "player")
 								.contentType(MediaType.APPLICATION_JSON)
 								.content("{\n" +
-										"    \"character\": \"char\"\n" +
+										"    \"character\": \"a\"\n" +
+										"}"))
+				.andExpect(status().isBadRequest());
+	}
+	@Test
+	void failValidationUserName() throws Exception {
+		doNothing().when(gameService).suggestCharacter(eq("1234"), eq("p"),
+				eq(new CharacterSuggestion("Batman")), any(UserName.class));
+		this.mockMvc.perform(
+						MockMvcRequestBuilders.post("/games/1234/characters")
+								.header("X-Id", "s")
+								.contentType(MediaType.APPLICATION_JSON)
+								.content("{\n" +
+										"    \"character\": \"Batman\"\n" +
 										"}"))
 				.andExpect(status().isOk());
-		verify(gameService, times(1)).suggestCharacter(eq("1234"), eq("player"), any(CharacterSuggestion.class));
 	}
 }

@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface SynchronousGame {
 
-	Optional<SynchronousPlayer> findPlayer(String player);
+	Optional<SynchronousPlayer> findPlayer(String playersId);
 
 	String getId();
 

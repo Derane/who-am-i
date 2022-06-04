@@ -19,58 +19,60 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
-import static com.eleks.academy.whoami.utils.StringUtils.Headers.PLAYER;
+import static com.eleks.academy.whoami.utils.StringUtils.Headers.*;
 
 @RestController
 @RequestMapping("/games")
 @RequiredArgsConstructor
 public class GameController {
 
-	private final GameService gameService;
+    private final GameService gameService;
 
-	@GetMapping
-	public List<GameLight> findAvailableGames(@RequestHeader(PLAYER) String player) {
-		return this.gameService.findAvailableGames(player);
-	}
+    @GetMapping
+    public List<GameLight> findAvailableGames(@RequestHeader(ID) String playerId) {
+        return this.gameService.findAvailableGames(playerId);
+    }
 
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public GameDetails createGame(@RequestHeader(PLAYER) String player,
-								  @Valid @RequestBody NewGameRequest gameRequest) {
-		return this.gameService.createGame(player, gameRequest);
-	}
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public GameDetails createGame(@RequestHeader(ID) String playerId,
+                                  @Valid @RequestBody NewGameRequest gameRequest) {
+        return this.gameService.createGame(playerId, gameRequest);
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<GameDetails> findById(@PathVariable("id") String id,
-												@RequestHeader(PLAYER) String player) {
-		return this.gameService.findByIdAndPlayer(id, player)
-				.map(ResponseEntity::ok)
-				.orElseGet(() -> ResponseEntity.notFound().build());
-	}
+    @GetMapping("/{id}")
+    public ResponseEntity<GameDetails> findById(@PathVariable("id") String id,
+                                                @RequestHeader(ID) String playerId) {
+        return this.gameService.findByIdAndPlayer(id, playerId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
-	// TODO: Should return enrolled player
-	@PostMapping("/{id}/players")
-	public void enrollToGame(@PathVariable("id") String id,
-							 @RequestHeader(PLAYER) String player) {
-		this.gameService.enrollToGame(id, player);
-	}
+    // TODO: Should return enrolled player
+    @PostMapping("/{id}/players")
+    public void enrollToGame(@PathVariable("id") String id,
+                             @RequestHeader(ID) String playerId) {
+        this.gameService.enrollToGame(id, playerId);
+    }
 
-	@PostMapping("/{id}/characters")
-	@ResponseStatus(HttpStatus.OK)
-	public void suggestCharacter(@PathVariable("id") String id,
-								 @RequestHeader(PLAYER) UserName player,
-								 @Valid @RequestBody CharacterSuggestion suggestion) {
-		this.gameService.suggestCharacter(id, player, suggestion);
-	}
+    @PostMapping("/{id}/characters")
+    @ResponseStatus(HttpStatus.OK)
+    public void suggestCharacterAndSetName(@PathVariable("id") String id,
+                                           @RequestHeader(ID) String playerId,
+                                           @Valid @RequestHeader(NAME) @Pattern(regexp =  "^\\d{4}-\\d{2}-\\d{2}$") UserName name,
+                                           @Valid @RequestBody CharacterSuggestion suggestion) {
+        this.gameService.suggestCharacter(id, playerId, suggestion, name);
+    }
 
-	@PostMapping("/{id}")
-	public ResponseEntity<GameDetails> startGame(@PathVariable("id") String id,
-												 @RequestHeader(PLAYER) String player) {
-		return this.gameService.startGame(id, player)
-				.map(ResponseEntity::ok)
-				.orElseGet(() -> ResponseEntity.notFound().build());
-	}
+    @PostMapping("/{id}")
+    public ResponseEntity<GameDetails> startGame(@PathVariable("id") String id,
+                                                 @RequestHeader(ID) String playerId) {
+        return this.gameService.startGame(id, playerId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 }

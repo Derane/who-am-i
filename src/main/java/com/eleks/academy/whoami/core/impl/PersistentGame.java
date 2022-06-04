@@ -37,8 +37,8 @@ public class PersistentGame implements Game, SynchronousGame {
 	}
 
 	@Override
-	public Optional<SynchronousPlayer> findPlayer(String player) {
-		return this.applyIfPresent(this.turns.peek(), gameState -> gameState.findPlayer(player));
+	public Optional<SynchronousPlayer> findPlayer(String playerId) {
+		return this.applyIfPresent(this.turns.peek(), gameState -> gameState.findPlayer(playerId));
 	}
 
 	@Override

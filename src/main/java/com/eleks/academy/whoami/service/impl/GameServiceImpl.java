@@ -12,12 +12,14 @@ import com.eleks.academy.whoami.model.response.GameLight;
 import com.eleks.academy.whoami.repository.GameRepository;
 import com.eleks.academy.whoami.service.GameService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Stack;
 import java.util.function.UnaryOperator;
 
 @Service
@@ -25,7 +27,13 @@ import java.util.function.UnaryOperator;
 public class GameServiceImpl implements GameService {
 
 	private final GameRepository gameRepository;
-
+	Stack<String> defaultNames = new Stack<>();
+	{
+		defaultNames.push("Player-4");
+		defaultNames.push("Player-3");
+		defaultNames.push("Player-2");
+		defaultNames.push("Player-1");
+	}
 	@Override
 	public List<GameLight> findAvailableGames(String player) {
 		return this.gameRepository.findAllAvailable(player)
@@ -45,7 +53,7 @@ public class GameServiceImpl implements GameService {
 		this.gameRepository.findById(id)
 				.filter(SynchronousGame::isAvailable)
 				.ifPresentOrElse(
-						game -> game.makeTurn(new Answer(player)),
+						game -> game.makeTurn(new Answer(player, defaultNames.pop())),
 						() -> {
 							throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot enroll to a game");
 						}
@@ -60,16 +68,20 @@ public class GameServiceImpl implements GameService {
 	}
 
 	@Override
-	public void suggestCharacter(String id, UserName player, CharacterSuggestion suggestion) {
+	public void suggestCharacter(String id, String playerId, CharacterSuggestion suggestion, UserName name) {
 		this.gameRepository.findById(id)
-				.flatMap(game -> game.findPlayer(player.getName()))
+				.flatMap(game -> game.findPlayer(playerId))
 				.ifPresent(p -> p.setCharacter(suggestion.getCharacter()));
+		this.gameRepository.findById(id)
+				.flatMap(game -> game.findPlayer(playerId))
+				.ifPresent(p -> p.setName(name.getName()));
 	}
 
 	@Override
-	public Optional<GameDetails> startGame(String id, String player) {
+	@SneakyThrows
+	public Optional<GameDetails> startGame(String id, String playerId) {
 		UnaryOperator<SynchronousGame> startGame = game -> {
-			game.makeTurn(new StartGameAnswer(player));
+			game.makeTurn(new StartGameAnswer(playerId, "S"));
 
 			return game;
 		};

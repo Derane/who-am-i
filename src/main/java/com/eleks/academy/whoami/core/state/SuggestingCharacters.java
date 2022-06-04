@@ -87,18 +87,18 @@ public final class SuggestingCharacters extends AbstractGameState {
 				&& enoughCharacters;
 	}
 
-	private GameState suggestCharacter(String player, String character) {
-		List<GameCharacter> characters = this.suggestedCharacters.get(player);
+	private GameState suggestCharacter(String playerId, String character) {
+		List<GameCharacter> characters = this.suggestedCharacters.get(playerId);
 
 		if (Objects.isNull(characters)) {
 			final var newCharacters = new ArrayList<GameCharacter>();
 
-			this.suggestedCharacters.put(player, newCharacters);
+			this.suggestedCharacters.put(playerId, newCharacters);
 
 			characters = newCharacters;
 		}
 
-		characters.add(GameCharacter.of(character, player));
+		characters.add(GameCharacter.of(character, playerId));
 
 		return this;
 	}

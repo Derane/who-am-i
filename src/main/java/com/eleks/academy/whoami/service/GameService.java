@@ -19,7 +19,7 @@ public interface GameService {
 
 	Optional<GameDetails> findByIdAndPlayer(String id, String player);
 
-	void suggestCharacter(String id, UserName player, CharacterSuggestion suggestion);
+	void suggestCharacter(String id, String playerId, CharacterSuggestion suggestion, UserName userName);
 
 	Optional<GameDetails> startGame(String id, String player);
 

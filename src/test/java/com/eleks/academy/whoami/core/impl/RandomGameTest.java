@@ -37,7 +37,7 @@ class RandomGameTest {
 		}
 
 		@Override
-		public Future<String> getName() {
+		public Future<String> getId() {
 			return CompletableFuture.completedFuture(name);
 		}
 
