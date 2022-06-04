@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
 public class PersistentPlayer implements Player, SynchronousPlayer {
 
     private final String id;
-    private final CompletableFuture<String> name = new CompletableFuture<>();
+    private CompletableFuture<String> name = new CompletableFuture<>();
 
 
     public Future<String> getName() {
@@ -25,8 +25,9 @@ public class PersistentPlayer implements Player, SynchronousPlayer {
 
     private final CompletableFuture<String> character = new CompletableFuture<>();
 
-    public PersistentPlayer(String name) {
-        this.id = Objects.requireNonNull(name);
+    public PersistentPlayer(String id, String name) {
+        this.id = Objects.requireNonNull(id);
+        this.name = CompletableFuture.completedFuture(name);
     }
 
     @Override

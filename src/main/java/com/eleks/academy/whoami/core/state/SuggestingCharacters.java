@@ -63,7 +63,7 @@ public final class SuggestingCharacters extends AbstractGameState {
 					.filter(StartGameAnswer.class::isInstance)
 					.map(StartGameAnswer.class::cast)
 					.map(then -> this.next())
-					.orElseGet(() -> this.suggestCharacter(answer.getPlayer(), answer.getMessage()));
+					.orElseGet(() -> this.suggestCharacter(answer.getPlayerId(), answer.getMessage()));
 		} finally {
 			this.lock.unlock();
 		}

@@ -12,7 +12,7 @@ class PersistentPlayerTest {
 
 	@Test
 	void allowToSuggestCharacterOnlyOnce() {
-		PersistentPlayer player = new PersistentPlayer("PLayerName");
+		PersistentPlayer player = new PersistentPlayer("PLayerId","PlayerName");
 		Future<String> character = player.suggestCharacter();
 		assertFalse(character.isDone());
 		player.setCharacter("character");

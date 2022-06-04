@@ -49,11 +49,11 @@ public class GameServiceImpl implements GameService {
 	}
 
 	@Override
-	public void enrollToGame(String id, String player) {
+	public void enrollToGame(String id, String playerId) {
 		this.gameRepository.findById(id)
 				.filter(SynchronousGame::isAvailable)
 				.ifPresentOrElse(
-						game -> game.makeTurn(new Answer(player, defaultNames.pop())),
+						game -> game.makeTurn(new Answer(playerId, defaultNames.pop())),
 						() -> {
 							throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot enroll to a game");
 						}
@@ -61,9 +61,9 @@ public class GameServiceImpl implements GameService {
 	}
 
 	@Override
-	public Optional<GameDetails> findByIdAndPlayer(String id, String player) {
+	public Optional<GameDetails> findByIdAndPlayer(String id, String playerId) {
 		return this.gameRepository.findById(id)
-				.filter(game -> game.findPlayer(player).isPresent())
+				.filter(game -> game.findPlayer(playerId).isPresent())
 				.map(GameDetails::of);
 	}
 

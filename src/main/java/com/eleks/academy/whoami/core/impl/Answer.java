@@ -12,16 +12,16 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public sealed class Answer permits StartGameAnswer {
-	private String name;
-	private  String player;
-	private String message;
+    private String name;
+    private String playerId;
+    private String message;
 
-	public Answer(String player, String name) {
-		this.player = player;
-		this.name = name;
-	}
+    public Answer(String playerId, String name) {
+        this.playerId = playerId;
+        this.name = name;
+    }
 
-	public Answer(String player) {
-		this.player=player;
-	}
+    public Answer(String playerId) {
+        this.playerId = playerId;
+    }
 }
