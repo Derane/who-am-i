@@ -6,17 +6,17 @@ import java.util.Optional;
 
 public interface SynchronousGame {
 
-	Optional<SynchronousPlayer> findPlayer(String playersId);
+    Optional<SynchronousPlayer> findPlayer(String playersId);
 
-	String getId();
+    String getId();
 
-	String getPlayersInGame();
+    String getPlayersInGame();
 
-	String getStatus();
+    String getStatus();
 
-	boolean isAvailable();
+    boolean isAvailable();
 
-	void makeTurn(Answer answer);
+    void makeTurn(Answer answer);
 
-	String getTurn();
+    String getTurn();
 }

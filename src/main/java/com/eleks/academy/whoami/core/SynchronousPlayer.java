@@ -4,7 +4,7 @@ import java.util.concurrent.Future;
 
 public interface SynchronousPlayer {
 
-	void setCharacter(String character);
+    void setCharacter(String character);
 
     void setName(String name);
 

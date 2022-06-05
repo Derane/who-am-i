@@ -11,19 +11,17 @@ public class PersistentPlayer implements Player, SynchronousPlayer {
 
     private final String id;
     private CompletableFuture<String> name = new CompletableFuture<>();
-
+    private final CompletableFuture<String> character = new CompletableFuture<>();
 
     public Future<String> getName() {
         return name;
     }
 
-    public void setName(String name) {
-        if (!this.name.complete(name)) {
-            throw new IllegalStateException("Name has already been suggested!");
-        }
-    }
 
-    private final CompletableFuture<String> character = new CompletableFuture<>();
+    public void setName(String name) {
+        this.name = CompletableFuture.completedFuture(name);
+
+    }
 
     public PersistentPlayer(String id, String name) {
         this.id = Objects.requireNonNull(id);

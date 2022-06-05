@@ -13,30 +13,30 @@ import java.util.stream.Stream;
 @Repository
 public class GameInMemoryRepository implements GameRepository {
 
-	private final Map<String, SynchronousGame> games = new ConcurrentHashMap<>();
+    private final Map<String, SynchronousGame> games = new ConcurrentHashMap<>();
 
-	@Override
-	public Stream<SynchronousGame> findAllAvailable(String player) {
-		Predicate<SynchronousGame> freeToJoin = SynchronousGame::isAvailable;
+    @Override
+    public Stream<SynchronousGame> findAllAvailable(String player) {
+        Predicate<SynchronousGame> freeToJoin = SynchronousGame::isAvailable;
 
-		Predicate<SynchronousGame> playersGame = game ->
-				game.findPlayer(player).isPresent();
+        Predicate<SynchronousGame> playersGame = game ->
+                game.findPlayer(player).isPresent();
 
-		return this.games.values()
-				.stream()
-				.filter(freeToJoin.or(playersGame));
-	}
+        return this.games.values()
+                .stream()
+                .filter(freeToJoin.or(playersGame));
+    }
 
-	@Override
-	public SynchronousGame save(SynchronousGame game) {
-		this.games.put(game.getId(), game);
+    @Override
+    public SynchronousGame save(SynchronousGame game) {
+        this.games.put(game.getId(), game);
 
-		return game;
-	}
+        return game;
+    }
 
-	@Override
-	public Optional<SynchronousGame> findById(String id) {
-		return Optional.ofNullable(this.games.get(id));
-	}
+    @Override
+    public Optional<SynchronousGame> findById(String id) {
+        return Optional.ofNullable(this.games.get(id));
+    }
 
 }

@@ -12,13 +12,13 @@ import java.util.concurrent.CompletableFuture;
  */
 public class MainGameLoop {
 
-	private CompletableFuture<List<SynchronousPlayer>> syncPlayers = new CompletableFuture<>();
-	private CompletableFuture<List<CharacterSuggestion>> charactersList = new CompletableFuture<>();
+    private CompletableFuture<List<SynchronousPlayer>> syncPlayers = new CompletableFuture<>();
+    private CompletableFuture<List<CharacterSuggestion>> charactersList = new CompletableFuture<>();
 
-	public MainGameLoop(CompletableFuture<List<SynchronousPlayer>> syncPlayers,
-						CompletableFuture<List<CharacterSuggestion>> charactersList) {
-		this.syncPlayers = syncPlayers;
-		this.charactersList = charactersList;
-	}
+    public MainGameLoop(CompletableFuture<List<SynchronousPlayer>> syncPlayers,
+                        CompletableFuture<List<CharacterSuggestion>> charactersList) {
+        this.syncPlayers = syncPlayers;
+        this.charactersList = charactersList;
+    }
 
 }

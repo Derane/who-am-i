@@ -20,23 +20,23 @@ import static java.util.stream.Collectors.toList;
 @RestControllerAdvice
 public class GameControllerAdvice extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(GameException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiError handleGameException(GameException gameException) {
-		return gameException::getMessage;
-	}
+    @ExceptionHandler(GameException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleGameException(GameException gameException) {
+        return gameException::getMessage;
+    }
 
-	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-																  HttpHeaders headers, HttpStatus status,
-																  WebRequest request) {
-		return ex.getBindingResult().getAllErrors()
-				.stream()
-				.map(ObjectError::getDefaultMessage)
-				.collect(collectingAndThen(
-						toList(),
-						details -> ResponseEntity.badRequest()
-								.body(new ErrorResponse("Validation failed!", details))
-				));
-	}
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
+        return ex.getBindingResult().getAllErrors()
+                .stream()
+                .map(ObjectError::getDefaultMessage)
+                .collect(collectingAndThen(
+                        toList(),
+                        details -> ResponseEntity.badRequest()
+                                .body(new ErrorResponse("Validation failed!", details))
+                ));
+    }
 }

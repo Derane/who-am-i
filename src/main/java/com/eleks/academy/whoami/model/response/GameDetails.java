@@ -12,18 +12,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GameDetails {
 
-	private String id;
+    private String id;
 
-	private String status;
+    private String status;
 
-	private String currentTurn;
+    private String currentTurn;
 
-	public static GameDetails of(SynchronousGame game) {
-		return GameDetails.builder()
-				.id(game.getId())
-				.status(game.getStatus())
-				.currentTurn(game.getTurn())
-				.build();
-	}
+    public static GameDetails of(SynchronousGame game) {
+        return GameDetails.builder()
+                .id(game.getId())
+                .status(game.getStatus())
+                .currentTurn(game.getTurn())
+                .build();
+    }
 
 }

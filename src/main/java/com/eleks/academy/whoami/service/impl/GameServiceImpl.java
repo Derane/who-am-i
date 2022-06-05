@@ -26,69 +26,76 @@ import java.util.function.UnaryOperator;
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
 
-	private final GameRepository gameRepository;
-	Stack<String> defaultNames = new Stack<>();
-	{
-		defaultNames.push("Player-4");
-		defaultNames.push("Player-3");
-		defaultNames.push("Player-2");
-		defaultNames.push("Player-1");
-	}
-	@Override
-	public List<GameLight> findAvailableGames(String player) {
-		return this.gameRepository.findAllAvailable(player)
-				.map(GameLight::of)
-				.toList();
-	}
+    private final GameRepository gameRepository;
+    Stack<String> defaultNames = new Stack<>();
 
-	@Override
-	public GameDetails createGame(String player, NewGameRequest gameRequest) {
-		final var game = this.gameRepository.save(new PersistentGame(player, gameRequest.getMaxPlayers()));
+    {
+        defaultNames.push("Player-4");
+        defaultNames.push("Player-3");
+        defaultNames.push("Player-2");
+        defaultNames.push("Player-1");
+    }
 
-		return GameDetails.of(game);
-	}
+    @Override
+    public List<GameLight> findAvailableGames(String player) {
+        return this.gameRepository.findAllAvailable(player)
+                .map(GameLight::of)
+                .toList();
+    }
 
-	@Override
-	public void enrollToGame(String id, String playerId) {
-		this.gameRepository.findById(id)
-				.filter(SynchronousGame::isAvailable)
-				.ifPresentOrElse(
-						game -> game.makeTurn(new Answer(playerId, defaultNames.pop())),
-						() -> {
-							throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot enroll to a game");
-						}
-				);
-	}
+    @Override
+    public GameDetails createGame(String player, NewGameRequest gameRequest) {
+        final var game = this.gameRepository.save(new PersistentGame(player, gameRequest.getMaxPlayers()));
 
-	@Override
-	public Optional<GameDetails> findByIdAndPlayer(String id, String playerId) {
-		return this.gameRepository.findById(id)
-				.filter(game -> game.findPlayer(playerId).isPresent())
-				.map(GameDetails::of);
-	}
+        return GameDetails.of(game);
+    }
 
-	@Override
-	public void suggestCharacter(String id, String playerId, CharacterSuggestion suggestion, UserName name) {
-		this.gameRepository.findById(id)
-				.flatMap(game -> game.findPlayer(playerId))
-				.ifPresent(p -> p.setCharacter(suggestion.getCharacter()));
-		this.gameRepository.findById(id)
-				.flatMap(game -> game.findPlayer(playerId))
-				.ifPresent(p -> p.setName(name.getName()));
-	}
+    @Override
+    public void enrollToGame(String id, String playerId) {
+        this.gameRepository.findById(id)
+                .filter(SynchronousGame::isAvailable)
+                .ifPresentOrElse(
+                        game -> game.makeTurn(new Answer(playerId, defaultNames.pop())),
+                        () -> {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot enroll to a game");
+                        }
+                );
+    }
 
-	@Override
-	@SneakyThrows
-	public Optional<GameDetails> startGame(String id, String playerId) {
-		UnaryOperator<SynchronousGame> startGame = game -> {
-			game.makeTurn(new StartGameAnswer(playerId, "S"));
+    @Override
+    public Optional<GameDetails> findByIdAndPlayer(String id, String playerId) {
+        return this.gameRepository.findById(id)
+                .filter(game -> game.findPlayer(playerId).isPresent())
+                .map(GameDetails::of);
+    }
 
-			return game;
-		};
+    @Override
+    public void suggestCharacter(String id, String playerId, CharacterSuggestion suggestion, UserName name) {
+        this.gameRepository.findById(id)
+                .flatMap(game -> game.findPlayer(playerId))
+                .ifPresent(p -> p.setCharacter(suggestion.getCharacter()));
+        this.gameRepository.findById(id)
+                .flatMap(game -> game.findPlayer(playerId))
+                .ifPresent(p -> p.setName(name.getName()));
+    }
 
-		return this.gameRepository.findById(id)
-				.map(startGame)
-				.map(GameDetails::of);
-	}
+    @Override
+    @SneakyThrows
+    public Optional<GameDetails> startGame(String id, String playerId) {
+        UnaryOperator<SynchronousGame> startGame = game -> {
+            game.makeTurn(new StartGameAnswer(playerId, "S"));
+
+            return game;
+        };
+
+        return this.gameRepository.findById(id)
+                .map(startGame)
+                .map(GameDetails::of);
+    }
+
+    @Override
+    public void leaveGame(String playerId) {
+
+    }
 
 }

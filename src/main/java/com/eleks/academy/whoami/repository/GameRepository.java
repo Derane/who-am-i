@@ -7,10 +7,10 @@ import java.util.stream.Stream;
 
 public interface GameRepository {
 
-	Stream<SynchronousGame> findAllAvailable(String player);
+    Stream<SynchronousGame> findAllAvailable(String player);
 
-	SynchronousGame save(SynchronousGame game);
+    SynchronousGame save(SynchronousGame game);
 
-	Optional<SynchronousGame> findById(String id);
+    Optional<SynchronousGame> findById(String id);
 
 }
