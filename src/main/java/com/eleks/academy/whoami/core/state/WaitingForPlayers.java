@@ -42,7 +42,19 @@ public final class WaitingForPlayers extends AbstractGameState {
             return new WaitingForPlayers(getMaxPlayers(), nextPlayers);
         }
     }
-
+    @Override
+    public GameState makeLeave(Answer answer) {
+        if (players.containsKey(answer.getPlayerId())) {
+            players.remove(answer.getPlayerId());
+        } else {
+            throw new GameException("Cannot leave the game");
+        }
+        if (players.size() == getMaxPlayers()) {
+            return new SuggestingCharacters(players);
+        } else {
+            return new WaitingForPlayers(getMaxPlayers(), players);
+        }
+    }
     @Override
     public Optional<SynchronousPlayer> findPlayer(String player) {
         return Optional.ofNullable(this.players.get(player));

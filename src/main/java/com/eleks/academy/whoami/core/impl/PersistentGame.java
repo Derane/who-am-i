@@ -59,7 +59,17 @@ public class PersistentGame implements Game, SynchronousGame {
             this.turnLock.unlock();
         }
     }
+    public void makeLeave(Answer answer) {
+        this.turnLock.lock();
 
+        try {
+            Optional.ofNullable(this.turns.poll())
+                    .map(gameState -> gameState.makeTurn(answer))
+                    .ifPresent(this.turns::add);
+        } finally {
+            this.turnLock.unlock();
+        }
+    }
     @Override
     public String getTurn() {
         return this.applyIfPresent(this.turns.peek(), GameState::getCurrentTurn);

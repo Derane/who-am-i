@@ -23,5 +23,5 @@ public interface GameService {
 
     Optional<GameDetails> startGame(String id, String player);
 
-    void leaveGame(String playerId);
+    void leaveGame(String id, String playerId);
 }

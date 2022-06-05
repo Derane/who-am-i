@@ -1,5 +1,6 @@
 package com.eleks.academy.whoami.core.state;
 
+import com.eleks.academy.whoami.core.impl.Answer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +17,7 @@ public abstract sealed class AbstractGameState implements GameState
     public String getStatus() {
         return this.getClass().getName();
     }
-
+    public abstract GameState makeLeave(Answer answer);
     /**
      * @return {@code null} as default implementation
      */

@@ -30,16 +30,11 @@ public class GameController {
         return this.gameService.findAvailableGames(playerId);
     }
     @PostMapping
-    public void leaveGame(@RequestHeader(ID) String playerId) {
-        return this.gameService.leaveGame(playerId);
-    }
-    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GameDetails createGame(@RequestHeader(ID) String playerId,
                                   @Valid @RequestBody NewGameRequest gameRequest) {
         return this.gameService.createGame(playerId, gameRequest);
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<GameDetails> findById(@PathVariable("id") String id,
                                                 @RequestHeader(ID) String playerId) {
@@ -49,10 +44,16 @@ public class GameController {
     }
 
     // TODO: Should return enrolled player
+
     @PostMapping("/{id}/players")
     public void enrollToGame(@PathVariable("id") String id,
                              @RequestHeader(ID) String playerId) {
         this.gameService.enrollToGame(id, playerId);
+    }
+    @PostMapping("/{id}/leaving")
+    public void leaveGame(@PathVariable("id") String id,
+                          @RequestHeader(ID) String playerId) {
+        this.gameService.leaveGame(id, playerId);
     }
 
     @PostMapping("/{id}/characters")

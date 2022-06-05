@@ -94,8 +94,15 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void leaveGame(String playerId) {
-
+    public void leaveGame(String id, String playerId) {
+        this.gameRepository.findById(id)
+                .filter(SynchronousGame::isAvailable)
+                .ifPresentOrElse(
+                        game -> game.makeTurn(new Answer(playerId, defaultNames.pop())),
+                        () -> {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot enroll to a game");
+                        }
+                );
     }
 
 }
