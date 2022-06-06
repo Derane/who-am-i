@@ -40,6 +40,11 @@ public final class ProcessingQuestion extends AbstractGameState {
     }
 
     @Override
+    public GameState makeLeave(Answer answer) throws GameException {
+        return this;
+    }
+
+    @Override
     public String getCurrentTurn() {
         return this.currentPlayer;
     }

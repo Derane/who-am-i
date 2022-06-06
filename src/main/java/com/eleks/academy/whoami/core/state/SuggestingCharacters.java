@@ -167,4 +167,8 @@ public final class SuggestingCharacters extends AbstractGameState {
         };
     }
 
+    @Override
+    public GameState makeLeave(Answer answer) {
+        return null;
+    }
 }
