@@ -11,8 +11,8 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserName {
-    @Size(min = 2, max = 50, message = "sas")
-    @NotBlank
+    @Size(min = 2, max = 50, message = "Nickname must be between 2 and 50 characters!")
+    @NotBlank(message = "Nickname must not be empty!")
     private String name;
 
 }

@@ -1,8 +1,7 @@
 package com.eleks.academy.whoami.controller;
 
-import com.eleks.academy.whoami.model.request.CharacterSuggestion;
 import com.eleks.academy.whoami.model.request.NewGameRequest;
-import com.eleks.academy.whoami.model.request.UserName;
+import com.eleks.academy.whoami.model.request.UserRequest;
 import com.eleks.academy.whoami.model.response.GameDetails;
 import com.eleks.academy.whoami.model.response.GameLight;
 import com.eleks.academy.whoami.service.GameService;
@@ -12,11 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import java.util.List;
 
 import static com.eleks.academy.whoami.utils.StringUtils.Headers.ID;
-import static com.eleks.academy.whoami.utils.StringUtils.Headers.NAME;
 
 @RestController
 @RequestMapping("/games")
@@ -29,12 +26,14 @@ public class GameController {
     public List<GameLight> findAvailableGames(@RequestHeader(ID) String playerId) {
         return this.gameService.findAvailableGames(playerId);
     }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GameDetails createGame(@RequestHeader(ID) String playerId,
                                   @Valid @RequestBody NewGameRequest gameRequest) {
         return this.gameService.createGame(playerId, gameRequest);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<GameDetails> findById(@PathVariable("id") String id,
                                                 @RequestHeader(ID) String playerId) {
@@ -50,6 +49,7 @@ public class GameController {
                              @RequestHeader(ID) String playerId) {
         this.gameService.enrollToGame(id, playerId);
     }
+
     @PostMapping("/{id}/leaving")
     public void leaveGame(@PathVariable("id") String id,
                           @RequestHeader(ID) String playerId) {
@@ -60,9 +60,9 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     public void suggestCharacterAndSetName(@PathVariable("id") String id,
                                            @RequestHeader(ID) String playerId,
-                                           @Valid @RequestHeader(NAME) @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$") UserName name,
-                                           @Valid @RequestBody CharacterSuggestion suggestion) {
-        this.gameService.suggestCharacter(id, playerId, suggestion, name);
+                                           @Valid @RequestBody UserRequest userRequest) {
+        this.gameService.suggestCharacter(id, playerId,
+                userRequest.getCharacter(), userRequest.getName());
     }
 
     @PostMapping("/{id}")
