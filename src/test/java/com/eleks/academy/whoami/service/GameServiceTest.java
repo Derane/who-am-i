@@ -1,5 +1,6 @@
 package com.eleks.academy.whoami.service;
 
+import com.eleks.academy.whoami.core.SynchronousGame;
 import com.eleks.academy.whoami.core.SynchronousPlayer;
 import com.eleks.academy.whoami.model.request.CharacterSuggestion;
 import com.eleks.academy.whoami.model.request.NewGameRequest;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +31,7 @@ class GameServiceTest {
 
     @BeforeEach
     public void setMaxPlayers() {
-        gameRequest.setMaxPlayers(2);
+        gameRequest.setMaxPlayers(3);
         gameId = gameService.createGame("host", gameRequest).getId();
     }
 
@@ -67,6 +69,26 @@ class GameServiceTest {
         gameService.suggestCharacter(gameId, playerId, character, userName);
         playerName = synchronousPlayer.get().getName().get();
         assertEquals(name, playerName);
+
+    }
+
+    @Test
+    void leaveTheGame() {
+        final String playerId = "player";
+        final String playerId2 = "player2";
+        AtomicReference<String> id1 = new AtomicReference<>();
+        Optional<SynchronousGame> game = gameRepository.findById(gameId);
+        game.ifPresent(a -> id1.set(a.getPlayersInGame()));
+        gameService.enrollToGame(gameId, playerId);
+        game.ifPresent(a -> id1.set(a.getPlayersInGame()));
+        assertThat(id1.get()).isEqualTo("2/3");
+        gameService.leaveGame(gameId, playerId);
+        game.ifPresent(a -> id1.set(a.getPlayersInGame()));
+        assertThat(id1.get()).isEqualTo("1/3");
+        gameService.enrollToGame(gameId, playerId2);
+        game.ifPresent(a -> id1.set(a.getPlayersInGame()));
+        assertThat(id1.get()).isEqualTo("2/3");
+
 
     }
 

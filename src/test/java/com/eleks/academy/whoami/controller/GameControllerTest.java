@@ -6,14 +6,12 @@ import com.eleks.academy.whoami.model.request.NewGameRequest;
 import com.eleks.academy.whoami.model.request.UserName;
 import com.eleks.academy.whoami.model.response.GameDetails;
 import com.eleks.academy.whoami.service.impl.GameServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -23,7 +21,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 
 @ExtendWith(MockitoExtension.class)
 class GameControllerTest {
@@ -48,18 +45,33 @@ class GameControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0]").doesNotHaveJsonPath());
     }
+
     @Test
     void enrollToGame() throws Exception {
         String id = "123";
-                doNothing().when(gameService).enrollToGame(eq(id), eq("123"));
+        doNothing().when(gameService).enrollToGame(eq(id), eq("123"));
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.post("/games/{id}/players", id)
                                 .header("X-Id", "123")
-								.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
         verify(gameService, times(1)).enrollToGame(eq(id), eq("123"));
     }
+
+    @Test
+    void leaveTheGame() throws Exception {
+        String id = "123";
+        doNothing().when(gameService).enrollToGame(eq(id), eq("123"));
+
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.post("/games/{id}/leaving", id)
+                                .header("X-Id", "123")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(gameService, times(1)).leaveGame(eq(id), eq("123"));
+    }
+
     @Test
     void createGame() throws Exception {
         GameDetails gameDetails = new GameDetails();
