@@ -42,8 +42,6 @@ public class GameController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // TODO: Should return enrolled player
-
     @PostMapping("/{id}/players")
     public void enrollToGame(@PathVariable("id") String id,
                              @RequestHeader(ID) String playerId) {

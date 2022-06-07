@@ -17,6 +17,8 @@ public sealed interface GameState permits AbstractGameState {
 
     GameState makeTurn(Answer answer) throws GameException;
 
+    GameState makeLeave(Answer answer) throws GameException;
+
     Optional<SynchronousPlayer> findPlayer(String player);
 
     /**

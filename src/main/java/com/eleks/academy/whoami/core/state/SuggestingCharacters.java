@@ -63,6 +63,11 @@ public final class SuggestingCharacters extends AbstractGameState {
     }
 
     @Override
+    public GameState makeLeave(Answer answer) {
+        return null;
+    }
+
+    @Override
     public Optional<SynchronousPlayer> findPlayer(String player) {
         return Optional.ofNullable(this.players.get(player));
     }
@@ -167,8 +172,5 @@ public final class SuggestingCharacters extends AbstractGameState {
         };
     }
 
-    @Override
-    public GameState makeLeave(Answer answer) {
-        return null;
-    }
+
 }

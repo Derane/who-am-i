@@ -42,6 +42,7 @@ public final class WaitingForPlayers extends AbstractGameState {
             return new WaitingForPlayers(getMaxPlayers(), nextPlayers);
         }
     }
+
     @Override
     public GameState makeLeave(Answer answer) {
         if (players.containsKey(answer.getPlayerId())) {
@@ -55,6 +56,7 @@ public final class WaitingForPlayers extends AbstractGameState {
             return new WaitingForPlayers(getMaxPlayers(), players);
         }
     }
+
     @Override
     public Optional<SynchronousPlayer> findPlayer(String player) {
         return Optional.ofNullable(this.players.get(player));

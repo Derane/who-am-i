@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
+import java.util.concurrent.ExecutionException;
 import java.util.function.UnaryOperator;
 
 @Service
@@ -96,9 +97,17 @@ public class GameServiceImpl implements GameService {
     @Override
     public void leaveGame(String id, String playerId) {
         this.gameRepository.findById(id)
+                .flatMap(game -> game.findPlayer(playerId)).ifPresent(a -> {
+                    try {
+                        defaultNames.push(a.getName().get());
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                });
+        this.gameRepository.findById(id)
                 .filter(SynchronousGame::isAvailable)
                 .ifPresentOrElse(
-                        game -> game.makeTurn(new Answer(playerId, defaultNames.pop())),
+                        game -> game.makeLeave(new Answer(playerId, "deleted")),
                         () -> {
                             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot enroll to a game");
                         }

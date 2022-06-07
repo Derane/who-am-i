@@ -17,7 +17,9 @@ public abstract sealed class AbstractGameState implements GameState
     public String getStatus() {
         return this.getClass().getName();
     }
+
     public abstract GameState makeLeave(Answer answer);
+
     /**
      * @return {@code null} as default implementation
      */

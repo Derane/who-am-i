@@ -18,5 +18,7 @@ public interface SynchronousGame {
 
     void makeTurn(Answer answer);
 
+    void makeLeave(Answer answer);
+
     String getTurn();
 }
